@@ -59,7 +59,7 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);
 button,.btn{font:inherit;font-size:14px;background:var(--bg2);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:7px 11px;cursor:pointer}
 button:active,.btn:active{background:var(--active)}
 button.prim{background:var(--accent);color:#fff;border-color:var(--accent)}
-#menu{display:none}
+@media (min-width:1001px){body.collapsed #side{display:none}}
 #scroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding-right:env(safe-area-inset-right)}
 #note{max-width:820px;margin:0 auto;padding:18px 22px 80px;font-size:var(--fs);line-height:1.75;overflow-wrap:anywhere}
 #note h1,#note h2,#note h3,#note h4{line-height:1.35;margin:1.6em 0 .6em}
@@ -106,7 +106,6 @@ button.prim{background:var(--accent);color:#fff;border-color:var(--accent)}
 #welcome .big{font-size:17px;padding:12px 22px}
 #shade{display:none}
 @media (max-width:1000px){
-  #menu{display:inline-block}
   #side{position:fixed;z-index:20;top:0;bottom:0;left:0;transform:translateX(-102%);transition:transform .2s;box-shadow:2px 0 18px rgba(0,0,0,.25);width:min(340px,86vw)}
   body.open #side{transform:none}
   body.open #shade{display:block;position:fixed;inset:0;z-index:10;background:rgba(0,0,0,.35)}
@@ -459,7 +458,12 @@ document.addEventListener('click',async e=>{
 $('#q').addEventListener('input',e=>search(e.target.value));
 
 /* ---------- UI ---------- */
-$('#menu').onclick=()=>document.body.classList.toggle('open');
+const wide=()=>matchMedia('(min-width:1001px)').matches;
+if(ls.get('collapsed')==='1')document.body.classList.add('collapsed');
+$('#menu').onclick=()=>{
+  if(wide()){const c=document.body.classList.toggle('collapsed');ls.set('collapsed',c?'1':'0')}
+  else document.body.classList.toggle('open');
+};
 $('#shade').onclick=()=>document.body.classList.remove('open');
 const pick=()=>$('#file').click();
 $('#open').onclick=pick;$('#open2').onclick=pick;
